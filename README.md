@@ -128,8 +128,9 @@ so that the router has few choices.
 
 ![CrossLink-NX DPHY Placement](doc/crosslinknx-placement.png)
 
-The DPHY macros are along the top edge (the vertical stacks of orange blocks
-are the pins).  The orange blocks are the hand-placed ring of flip flops.
+The DPHY macros are along the top edge (the tiny vertical stacks of orange
+blocks are the pins, one stack for each of the two macros).  The larger
+orange blocks are the hand-placed ring of flip flops.
 
 This works, but is not very satisfying.  Since Radiant doesn't know the
 timing requirements, I have no way to know if this is the ideal placement
