@@ -135,3 +135,70 @@ orange blocks are the hand-placed ring of flip flops.
 This works, but is not very satisfying.  Since Radiant doesn't know the
 timing requirements, I have no way to know if this is the ideal placement
 for these flip flops.
+
+### PCI Express
+
+Crosslink-NX includes a high speed 5G SERDES dedicated to PCI Express.  I
+had a desire to transfer video between two Crosslink-NX devices using this
+interface, here are my notes:
+
+1. Clocking
+
+The transceivers need a reference clock.  For PCIe, it's supposed to be a
+100 MHz common clock between both ends (mesochronous), but I suspect the
+transceiver will work even if they are not from the same source
+(plesiochronous), but I have not proved this.
+
+In any case, the refernce clock needs PPM stability and the clock recovery
+works only over an extremely narrow range.  So you can not, for example,
+transfer the pixel clock from one side to the other by feeding it as the
+reference clock on the transmit side.
+
+BTW, the CrossLink-NX evaluation board does not have 100 MHz oscillators for
+this, you need to use an external board (for example, a PCIe reference clock
+generator board such as Si52144-EVB).
+
+2. TLP interface
+
+You can send arbitrary data from one side to the other using the TLP
+interface.  The configuration space registers need to be first set up, then
+memory write transactions are forwarded through.
+
+Here are config register settings:
+
+~~~~
+end point config registers:
+
+   4 <- 7   Enable memory, io, bus mastering
+
+  10  <-   30000   Set BAR0 to 30000
+~~~~
+
+Here is an example TLP packet:
+
+~~~~
+>pci mem wr 30000000 55aaaa55
+MEM addr = 30000000 data = 55aaaa55
+Sending:
+ 01000040
+ 0f000000
+ 00000030
+ 55aaaa55
+Done.
+~~~~
+
+3. Root Complex Mode
+
+The above works with both ends set in End Point mode.  Normally one end
+should be Root Complex mode, and there should be a PCI enumeration process
+to set up the BARs.  However I suspect that there is something wrong with
+the End Point to Root Complex direction of the link (even though link up
+status is correct):
+
+1. Configuration reads from root to endpoint don't return their completions
+
+2. Completions from Type 1 configuration writes issued on the Root Complex
+are lost (but the configuration to the end point's register does happen).
+
+3. Memory writes from endpoint to root complex are lost
+
