@@ -149,7 +149,7 @@ The transceivers need a reference clock.  For PCIe, it's supposed to be a
 transceiver will work even if they are not from the same source
 (plesiochronous), but I have not proved this.
 
-In any case, the refernce clock needs PPM stability and the clock recovery
+In any case, the reference clock needs PPM stability and the clock recovery
 works only over an extremely narrow range.  So you can not, for example,
 transfer the pixel clock from one side to the other by feeding it as the
 reference clock on the transmit side.
@@ -187,7 +187,7 @@ Sending:
 Done.
 ~~~~
 
-3. Root Complex Mode
+3. Root Complex Mode, Broken?
 
 The above works with both ends set in End Point mode.  Normally one end
 should be Root Complex mode, and there should be a PCI enumeration process
