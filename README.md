@@ -62,7 +62,7 @@ Lattice IP), but it's difficult:
 configure.  Radiant 3.0 was OK.  Maybe something to do with delaying the
 exit of configuration until PLLs are locked, or something like that.
 
-3. The manual for these macros are here:
+3. The manual for these macros is here:
 
 [FPGA-TN-02081](https://www.latticesemi.com/view_document?document_id=52781)
 
@@ -71,7 +71,7 @@ the IP catalog names or the MIXEL signal names.  Maybe this is due to
 licensing issues with MIXEL or maybe they are encouraging you to use the
 non-free Lattice IP.
 
-4. The generated wrapped exposes only a fraction of the MIXEL core's
+4. The generated wrapper exposes only a fraction of the MIXEL core's
 signals:
 
 On the MIPI receiver:
@@ -94,7 +94,7 @@ you are transmitting data).
 
 #### Signaling protocol
 
-The manual is incomplete, but you figure out the signaling protocol through
+The manual is incomplete, but you can figure out the signaling protocol through
 simulation.  Here is a timing diagram to save you some time:
 
 ![CrossLink-NX DPHY Signals](doc/crosslinknx-dphy.png)
@@ -120,7 +120,7 @@ begins on the following cycle.  Note that the 0xB8 was stripped.
 Radiant (at least up through 3.1) has no notion of any timing requirements
 between the hard macro signals and the FPGA core.  The signals will not be
 constrained, and you *will* have hold-time problems.  The tool will not
-included these signals in the unconstrained path report.
+include these signals in the unconstrained path report.
 
 So here's what I did: I added a stage of hand-placed flip-flops between my
 FPGA code and the hard-macro.  I located these right on the edge of the chip
