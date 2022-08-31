@@ -71,6 +71,9 @@ the IP catalog names or the MIXEL signal names.  Maybe this is due to
 licensing issues with MIXEL or maybe they are encouraging you to use the
 non-free Lattice IP.
 
+4. The generated wrapped exposes only a fraction of the MIXEL core's
+signals:
+
 On the MIPI receiver:
 
 The generated Verilog IP wrapper does not give the divided MIPI clock.  But
@@ -89,7 +92,45 @@ Look for .UCTXREQH(hs_tx_data_en_i) and change it to .UCTXREQH(hs_tx_en_i).
 This way, the MIPI clock will run when hs_tx_en_i is high (and not only when
 you are transmitting data).
 
+#### Signaling protocol
+
 The manual is incomplete, but you figure out the signaling protocol through
 simulation.  Here is a timing diagram to save you some time:
 
 ![CrossLink-NX DPHY Signals](doc/crosslinknx-dphy.png)
+
+This is a MIPI link with two lanes with a Lattice/MIXEL transmitter feeding
+a Lattice/MIXEL receiver.
+
+To enter high speed mode and start transmitting, raise hs_tx_data_en_i and
+place the first word of data on hs_tx_data_i.  Eventually hs_tx_cil_ready_o
+will go high.  The data on hs_tx_data_i is transmitted on every cycle that
+hs_tx_cil_ready_o is high.  When you want to return to LP mode, lower
+hs_tx_data_en_i.
+
+Note that the hard macro automatically prepends the DPHY sync code, the 0xB8
+(you can see it serialized on the MIPI data lines, dsi_p- remember LSB first).
+
+When the receiver sees HS mode, byte_clk starts to oscillate.  When the sync
+code is detected, hs_rx_data_sync_o is pulsed for one cycle.  The data
+begins on the following cycle.  Note that the 0xB8 was stripped.
+
+#### Timing closure
+
+Radiant (at least up through 3.1) has no notion of any timing requirements
+between the hard macro signals and the FPGA core.  The signals will not be
+constrained, and you *will* have hold-time problems.  The tool will not
+included these signals in the unconstrained path report.
+
+So here's what I did: I added a stage of hand-placed flip-flops between my
+FPGA code and the hard-macro.  I located these right on the edge of the chip
+so that the router has few choices.
+
+![CrossLink-NX DPHY Placement](doc/crosslinknx-placement.png)
+
+The DPHY macros are along the top edge (the vertical stacks of orange blocks
+are the pins).  The orange blocks are the hand-placed ring of flip flops.
+
+This works, but is not very satisfying.  Since Radiant doesn't know the
+timing requirements, I have no way to know if this is the ideal placement
+for these flip flops.
