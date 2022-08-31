@@ -5,7 +5,7 @@ My notes about specific FPGAs
 ## Lattice Semiconductor CrossLink-NX
 
 [CrossLink-NX](https://www.latticesemi.com/CrossLinkNX) is a 28 nm FPGA with
-MIPI DPHY capable differential I/O and MIPI DPHY hard macros.
+MIPI DPHY capable differential I/O, MIPI DPHY hard macros and PCIe 5G SERDES.
 
 ### Eval Board
 
@@ -45,7 +45,7 @@ There are DDR I/O cells, such as ODDRX1 and IDDRX1.  These cells have a
 parameter called GSR, which is "ENABLED" by default.  This is bad since the
 globel reset net may not be what you think it is in the chip (it's randomly
 decided which reset net will use the global reset net).  Anyway, just set
-GSR to "DISABLED".
+GSR to "DISABLED" unless you are sure.
 
 ### DPHY I/O
 
@@ -56,7 +56,7 @@ CrossLink.
 You may use the DPHY hard macros for free (without paying for additional
 Lattice IP), but it's difficult:
 
-1. The raw hard macros can be found in IP catalog / Module / IO / MIPI_DPHY. 
+1. The raw hard macros can be found in the Radiant IP catalog in Module / IO / MIPI_DPHY. 
 
 2. I had difficulty when using macros from Radiant 3.1, the FPGA would not
 configure.  Radiant 3.0 was OK.  Maybe something to do with delaying the
@@ -67,8 +67,8 @@ exit of configuration until PLLs are locked, or something like that.
 [FPGA-TN-02081](https://www.latticesemi.com/view_document?document_id=52781)
 
 The manual is totally incomplete.  In addition, the signal names don't match
-the IP catalog names or the MIXEL signal names.  Maybe this is due to
-licensing issues with MIXEL or maybe they are encouraging you to use the
+the IP catalog wrapper names or the MIXEL signal names.  Maybe this is due
+to licensing issues with MIXEL or maybe they are encouraging you to use the
 non-free Lattice IP.
 
 4. The generated wrapper exposes only a fraction of the MIXEL core's
@@ -77,7 +77,7 @@ signals:
 On the MIPI receiver:
 
 The generated Verilog IP wrapper does not give the divided MIPI clock.  But
-it's available if you modify the wrappper: look for "int_clk": this is the
+it's available if you modify the wrapper: look for "int_clk": this is the
 divided clock from the MIPI clock which will be running if the MIPI clock is
 running.  The "byte_clk" only runs when the the MIPI data pins are in
 high-speed mode.
