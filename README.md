@@ -53,14 +53,14 @@ The DPHY hard macros are from a company called [MIXEL](https://mixel.com/).
 The Crosslink-NX DPHY hard macros are different from the ones used in
 CrossLink.
 
-You may use the DPHY hardmacros for free (without paying for additional
+You may use the DPHY hard macros for free (without paying for additional
 Lattice IP), but it's difficult:
 
-1. The raw hardmacros can be found in IP catalog / Module / IO / MIPI_DPHY. 
+1. The raw hard macros can be found in IP catalog / Module / IO / MIPI_DPHY. 
 
 2. I had difficulty when using macros from Radiant 3.1, the FPGA would not
-configure.  Radiant 3.0 was OK.  Maybe something to do with PLLs locking
-holding FPGA from coming out of config, but I don't know for sure.
+configure.  Radiant 3.0 was OK.  Maybe something to do with delaying the
+exit of configuration until PLLs are locked, or something like that.
 
 3. The manual for these macros are here:
 
@@ -76,7 +76,8 @@ On the MIPI receiver:
 The generated Verilog IP wrapper does not give the divided MIPI clock.  But
 it's available if you modify the wrappper: look for "int_clk": this is the
 divided clock from the MIPI clock which will be running if the MIPI clock is
-running.
+running.  The "byte_clk" only runs when the the MIPI data pins are in
+high-speed mode.
 
 On the MIPI transmitter:
 
@@ -84,3 +85,11 @@ The transmitted is always in discontinuous clock mode, no matter what the
 setting says in the GUI.  I think this is a code mistake in the generated
 wrapper code.
 
+Look for .UCTXREQH(hs_tx_data_en_i) and change it to .UCTXREQH(hs_tx_en_i). 
+This way, the MIPI clock will run when hs_tx_en_i is high (and not only when
+you are transmitting data).
+
+The manual is incomplete, but you figure out the signaling protocol through
+simulation.  Here is a timing diagram to save you some time:
+
+![CrossLink-NX DPHY Signals](doc/crosslinknx-dphy.png)
