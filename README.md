@@ -84,7 +84,7 @@ high-speed mode.
 
 On the MIPI transmitter:
 
-The transmitted is always in discontinuous clock mode, no matter what the
+The transmitter is always in discontinuous clock mode, no matter what the
 setting says in the GUI.  I think this is a code mistake in the generated
 wrapper code.
 
