@@ -8,7 +8,8 @@ The KR260 Robotics Starter Kit user manual is missing the FPGA to carrier
 card port mapping.  Instead you have to tediously join the schematics and
 Kria_K26_SOM_Rev1.xdc files.  I've done this for you, here it is:
 
-[kria_robotics_start_kit_pinout.ods](kria_robotics_start_kit_pinout.ods)
+[kria_robotics_starter_kit_pinout.ods](kria_robotics_start_kit_pinout.ods)
+[kria_robotics_starter_kit_pinout.csv](kria_robotics_start_kit_pinout.csv)
 
 ## Lattice Semiconductor CrossLink-NX
 
