@@ -2,6 +2,14 @@
 
 My notes about specific FPGAs
 
+## Kria K26 SOM on Robotics Starter Kit Carrier Card
+
+The KR260 Robotics Starter Kit user manual is missing the FPGA to carrier
+card port mapping.  Instead you have to tediously join the schematics and
+Kria_K26_SOM_Rev1.xdc files.  I've done this for you, here it is:
+
+[kria_robotics_start_kit_pinout.ods](kria_robotics_start_kit_pinout.ods)
+
 ## Lattice Semiconductor CrossLink-NX
 
 [CrossLink-NX](https://www.latticesemi.com/CrossLinkNX) is a 28 nm FPGA with
