@@ -17,6 +17,18 @@ Kria_K26_SOM_Rev1.xdc files.  I've done this for you, here it is:
 [CrossLink-NX](https://www.latticesemi.com/CrossLinkNX) is a 28 nm FPGA with
 MIPI DPHY capable differential I/O, MIPI DPHY hard macros and PCIe 5G SERDES.
 
+### PLL
+
+NX PLLs need to be held in reset for 1 ms after entering user mode.  Also
+the PLL reset pulse needs to be 1 ms in general.  I have found that if you
+violate this rule the requested static phases of the PLL outputs are
+incorrect even though the lock signal is asserted.  With only a 1 us reset
+pulse, I was getting completely random phase relationships between the PLL
+outputs after each reconfiguration of the FPGA.
+
+Static phase convention: a 90 degree edge (as specified in the IP GUI)
+happens _after_ a 0 degree edge.
+
 ### Eval Board
 
 There is a [CrossLink-NX Evaluation Board](https://www.latticesemi.com/en/Products/DevelopmentBoardsAndKits/CrossLink-NXEvaluationBoard),
